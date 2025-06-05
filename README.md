@@ -399,7 +399,7 @@ If you use this toolkit in academic research, please cite:
 @software{lackadaisical2024,
   title = {Lackadaisical Anonymity Toolkit},
   author = {Lackadaisical Security Team},
-  year = {2024},
+  year = {2025},
   url = {https://github.com/lackadaisical-security/anonymity-toolkit}
 }
 ```
