@@ -1,0 +1,305 @@
+#!/usr/bin/env python3
+"""
+Lackadaisical Anonymity Toolkit - Main Launcher
+"""
+
+import os
+import sys
+import argparse
+import subprocess
+import json
+from pathlib import Path
+
+# Toolkit root directory
+TOOLKIT_ROOT = Path(__file__).parent
+sys.path.insert(0, str(TOOLKIT_ROOT))
+
+# Available modules and their entry points
+MODULES = {
+    'tor-control': {
+        'script': 'modules/network/tor_controller.py',
+        'description': 'Control and monitor Tor connections'
+    },
+    'dns-over-https': {
+        'script': 'modules/network/dns_over_https.py',
+        'description': 'Secure DNS resolution over HTTPS'
+    },
+    'metadata-clean': {
+        'binary': 'bin/metadata_cleaner',
+        'description': 'Remove metadata from files'
+    },
+    'secure-delete': {
+        'binary': 'bin/secure_delete',
+        'description': 'Securely delete files'
+    },
+    'pseudonym': {
+        'script': 'modules/identity/pseudonym_generator.rb',
+        'interpreter': 'ruby',
+        'description': 'Generate fake identities'
+    },
+    'mac-spoof': {
+        'script': 'tools/perl/mac_spoofer.pl',
+        'interpreter': 'perl',
+        'description': 'Change MAC address'
+    },
+    'activity-monitor': {
+        'script': 'modules/opsec/activity_monitor.py',
+        'description': 'Monitor system for suspicious activity'
+    },
+    'anti-forensics': {
+        'script': 'modules/system/anti_forensics.py',
+        'description': 'Defeat forensic analysis'
+    },
+    'browser-spoof': {
+        'script': 'modules/web/browser_fingerprint_spoofer.js',
+        'interpreter': 'node',
+        'description': 'Spoof browser fingerprint'
+    },
+    'network-scan': {
+        'binary': 'bin/NetworkScanner',
+        'description': 'Advanced network scanning'
+    },
+    'steganography': {
+        'script': 'tools/php/steganography.php',
+        'interpreter': 'php',
+        'description': 'Hide data in images and files'
+    },
+    'traffic-analyze': {
+        'script': 'tools/lua/traffic_analyzer.lua',
+        'interpreter': 'lua',
+        'description': 'Analyze network traffic'
+    },
+    'privacy-check': {
+        'script': 'tools/bash/privacy_check.sh',
+        'interpreter': 'bash',
+        'description': 'Check system privacy status'
+    },
+    'anonymize': {
+        'script': 'tools/python/network_anonymizer.py',
+        'description': 'Automated network anonymization'
+    },
+    'footprint-analyze': {
+        'script': 'modules/opsec/digital_footprint_analyzer.py',
+        'description': 'Analyze digital footprint'
+    },
+    'counter-surveillance': {
+        'script': 'modules/opsec/counter_surveillance.sh',
+        'interpreter': 'bash',
+        'description': 'Detect surveillance devices'
+    },
+    'trace-remove': {
+        'script': 'tools/powershell/Remove-Traces.ps1',
+        'interpreter': 'pwsh',
+        'description': 'Remove system traces (Windows)'
+    }
+}
+
+class LackadaisicalLauncher:
+    """Main launcher for Lackadaisical Toolkit"""
+    
+    def __init__(self):
+        self.config = self.load_config()
+        self.setup_environment()
+    
+    def load_config(self):
+        """Load toolkit configuration"""
+        config_file = Path('/etc/lackadaisical/config.json')
+        if not config_file.exists():
+            config_file = TOOLKIT_ROOT / 'config' / 'default.conf'
+        
+        if config_file.exists():
+            with open(config_file) as f:
+                return json.load(f)
+        
+        return {
+            'verbose': False,
+            'use_venv': True,
+            'log_level': 'INFO'
+        }
+    
+    def setup_environment(self):
+        """Setup Python environment"""
+        if self.config.get('use_venv'):
+            venv_path = TOOLKIT_ROOT / 'venv'
+            if venv_path.exists():
+                # Activate virtual environment
+                activate_script = venv_path / 'bin' / 'activate_this.py'
+                if activate_script.exists():
+                    exec(open(activate_script).read(), {'__file__': str(activate_script)})
+    
+    def list_modules(self):
+        """List all available modules"""
+        print("Lackadaisical Anonymity Toolkit - Available Modules")
+        print("=" * 60)
+        
+        for name, info in sorted(MODULES.items()):
+            print(f"{name:<20} {info['description']}")
+        
+        print("\nUsage: lackadaisical <module> [options]")
+        print("       lackadaisical <module> --help")
+    
+    def run_module(self, module_name: str, args: list):
+        """Run a specific module"""
+        if module_name not in MODULES:
+            print(f"Error: Unknown module '{module_name}'")
+            self.list_modules()
+            return 1
+        
+        module_info = MODULES[module_name]
+        
+        # Determine how to run the module
+        if 'binary' in module_info:
+            # Run compiled binary
+            binary_path = TOOLKIT_ROOT / module_info['binary']
+            if not binary_path.exists():
+                print(f"Error: Binary not found: {binary_path}")
+                print("Run './scripts/setup.sh' to build binaries")
+                return 1
+            
+            cmd = [str(binary_path)] + args
+            
+        elif 'script' in module_info:
+            # Run script
+            script_path = TOOLKIT_ROOT / module_info['script']
+            if not script_path.exists():
+                print(f"Error: Script not found: {script_path}")
+                return 1
+            
+            interpreter = module_info.get('interpreter', 'python3')
+            
+            # Special handling for Python scripts in venv
+            if interpreter == 'python3' and self.config.get('use_venv'):
+                venv_python = TOOLKIT_ROOT / 'venv' / 'bin' / 'python'
+                if venv_python.exists():
+                    interpreter = str(venv_python)
+            
+            cmd = [interpreter, str(script_path)] + args
+        
+        else:
+            print(f"Error: Module '{module_name}' has no entry point")
+            return 1
+        
+        # Run the command
+        try:
+            # Check if we need sudo
+            if module_name in ['mac-spoof', 'anonymize', 'anti-forensics'] and os.geteuid() != 0:
+                print(f"Module '{module_name}' requires root privileges")
+                cmd = ['sudo'] + cmd
+            
+            result = subprocess.run(cmd)
+            return result.returncode
+            
+        except KeyboardInterrupt:
+            print("\nInterrupted by user")
+            return 130
+        except Exception as e:
+            print(f"Error running module: {e}")
+            return 1
+    
+    def show_banner(self):
+        """Display toolkit banner"""
+        banner = """
+    __               __             __      _      _           __
+   / /   ____ ______/ /______ _____/ /___ _(_)____(_)_______ _/ /
+  / /   / __ `/ ___/ //_/ __ `/ __  / __ `/ / ___/ / ___/ __ `/ / 
+ / /___/ /_/ / /__/ ,< / /_/ / /_/ / /_/ / (__  ) / /__/ /_/ / /  
+/_____/\__,_/\___/_/|_|\__,_/\__,_/\__,_/_/____/_/\___/\__,_/_/   
+                                                                   
+        Anonymity Toolkit v1.0 - https://lackadaisical-security.com
+        """
+        print(banner)
+    
+    def run_tests(self):
+        """Run test suite"""
+        test_script = TOOLKIT_ROOT / 'tests' / 'test_all.py'
+        if test_script.exists():
+            venv_python = TOOLKIT_ROOT / 'venv' / 'bin' / 'python'
+            if venv_python.exists():
+                cmd = [str(venv_python), str(test_script)]
+            else:
+                cmd = ['python3', str(test_script)]
+            
+            subprocess.run(cmd)
+        else:
+            print("Test suite not found")
+    
+    def check_updates(self):
+        """Check for toolkit updates"""
+        print("Checking for updates...")
+        
+        try:
+            # Check git repository
+            result = subprocess.run(
+                ['git', '-C', str(TOOLKIT_ROOT), 'fetch'],
+                capture_output=True,
+                text=True
+            )
+            
+            # Check if behind origin
+            result = subprocess.run(
+                ['git', '-C', str(TOOLKIT_ROOT), 'status', '-uno'],
+                capture_output=True,
+                text=True
+            )
+            
+            if 'Your branch is behind' in result.stdout:
+                print("Updates available! Run './scripts/deploy.sh update' to update")
+            else:
+                print("Toolkit is up to date")
+                
+        except Exception as e:
+            print(f"Could not check for updates: {e}")
+
+def main():
+    """Main entry point"""
+    parser = argparse.ArgumentParser(
+        description='Lackadaisical Anonymity Toolkit',
+        epilog='Use "lackadaisical <module> --help" for module-specific help'
+    )
+    
+    parser.add_argument('module', nargs='?', help='Module to run')
+    parser.add_argument('args', nargs='*', help='Module arguments')
+    parser.add_argument('--list', '-l', action='store_true', 
+                       help='List available modules')
+    parser.add_argument('--version', '-v', action='store_true',
+                       help='Show version information')
+    parser.add_argument('--test', action='store_true',
+                       help='Run test suite')
+    parser.add_argument('--update-check', action='store_true',
+                       help='Check for updates')
+    parser.add_argument('--banner', '-b', action='store_true',
+                       help='Show banner')
+    
+    args = parser.parse_args()
+    
+    launcher = LackadaisicalLauncher()
+    
+    if args.version:
+        print("Lackadaisical Anonymity Toolkit v1.0")
+        return 0
+    
+    if args.banner or (not args.module and not args.list and not args.test):
+        launcher.show_banner()
+    
+    if args.list:
+        launcher.list_modules()
+        return 0
+    
+    if args.test:
+        launcher.run_tests()
+        return 0
+    
+    if args.update_check:
+        launcher.check_updates()
+        return 0
+    
+    if args.module:
+        return launcher.run_module(args.module, args.args)
+    
+    if not args.banner:
+        launcher.list_modules()
+    
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
