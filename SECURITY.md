@@ -387,8 +387,213 @@ We recognize and reward security researchers:
 * Tor Project (https://www.torproject.org/) - Anonymity network
 * OWASP (https://owasp.org/) - Application security
 
+## Export Compliance
+
+### U.S. Export Control Laws and Regulations
+
+This software and its contents are subject to U.S. export control laws and regulations, specifically the Export Administration Regulations (EAR) administered by the Bureau of Industry and Security (BIS) of the U.S. Department of Commerce.
+
+### Cryptographic Technology Classification
+
+This repository contains strong cryptographic software and technology, including:
+
+* **Encryption algorithms**: AES-256, ChaCha20-Poly1305, RSA-4096
+* **Cryptographic libraries**: Integration with cryptography, libsodium, OpenSSL
+* **Secure communication protocols**: TLS, end-to-end encryption
+* **Key management systems**: Credential vaults, secure storage
+* **Authentication mechanisms**: Cryptographic authentication
+* **Steganography tools**: Data hiding using cryptographic techniques
+* **Anti-forensics tools**: Secure deletion with cryptographic verification
+
+**Export Control Classification Number (ECCN)**: This software is classified under ECCN 5D002 on the Commerce Control List as publicly available encryption source code.
+
+### License Exception TSU
+
+This software is made publicly available under **License Exception TSU** (Technology and Software - Unrestricted) in accordance with 15 CFR § 740.13(e). This exception permits export of publicly available encryption source code that meets specific criteria.
+
+#### Requirements for License Exception TSU:
+
+1. **Public Availability**: Source code must be publicly available (this repository satisfies this requirement)
+2. **Notification**: The U.S. government has been notified of the availability of this source code
+3. **No Classified Information**: This software contains no classified information
+4. **Not Subject to ITAR**: This software is not subject to International Traffic in Arms Regulations (ITAR)
+
+### Prohibited Destinations and Parties
+
+#### Embargoed Countries and Regions
+
+**Export, re-export, or transfer of this software is STRICTLY PROHIBITED to:**
+
+* **Cuba** - Comprehensive embargo under 31 CFR Part 515
+* **Iran** - Comprehensive embargo under 31 CFR Part 560  
+* **North Korea (DPRK)** - Comprehensive embargo under 31 CFR Part 510
+* **Syria** - Comprehensive embargo under 31 CFR Part 542
+* **Crimea, Donetsk, and Luhansk regions of Ukraine** - Regional sanctions under Executive Order 13685
+* **Any other country, region, or territory subject to comprehensive U.S. sanctions**
+
+**Note**: This list is subject to change. Users must verify current sanctions at https://sanctionssearch.ofac.treas.gov/
+
+#### Restricted Parties Lists
+
+Export is prohibited to individuals and entities on the following U.S. government lists:
+
+1. **Denied Persons List (DPL)** - BIS denied export privileges
+2. **Entity List** - BIS list of entities subject to license requirements
+3. **Specially Designated Nationals (SDN) List** - OFAC sanctions list
+4. **Unverified List (UVL)** - BIS list of parties whose authenticity is unverified
+5. **Military End User (MEU) List** - BIS list of Chinese and Russian military end users
+6. **Sectoral Sanctions Identifications (SSI) List** - OFAC sectoral sanctions
+7. **Foreign Sanctions Evaders (FSE) List** - OFAC sanctions evaders
+8. **Non-SDN Palestinian Legislative Council (NS-PLC) List** - OFAC list
+9. **Non-SDN Menu-Based Sanctions (NS-MBS) List** - OFAC list
+
+**Verification Required**: Before any export, users must screen recipients against all restricted parties lists at:
+* https://www.trade.gov/consolidated-screening-list
+* https://sanctionssearch.ofac.treas.gov/
+
+### Prohibited End Uses
+
+This software may NOT be used for or exported for the following purposes:
+
+1. **Nuclear Activities**: Development, production, or use of nuclear materials or facilities
+2. **Missile Technology**: Development or production of missiles or unmanned aerial vehicles
+3. **Chemical/Biological Weapons**: Development, production, or use of chemical or biological weapons
+4. **Restricted Military End Uses**: Use by military, security, or intelligence services in certain countries
+5. **Human Rights Violations**: Use in connection with human rights abuses or violations
+6. **Cyber Attacks**: Offensive cyber operations against U.S. interests
+7. **Sanctions Evasion**: Facilitation of sanctions evasion activities
+
+### User Certifications and Responsibilities
+
+#### Required Certifications
+
+**By downloading, installing, accessing, or using this software, you certify that:**
+
+1. ✓ You are not located in, under control of, or a national/resident of any embargoed country or region
+2. ✓ You are not listed on any U.S. government restricted parties list
+3. ✓ You will not export, re-export, or transfer this software to any prohibited country, region, or party
+4. ✓ You will not use this software for any prohibited end use
+5. ✓ You understand and will comply with all applicable U.S. export control laws and regulations
+6. ✓ You understand that violations may result in civil and criminal penalties
+
+#### User Compliance Obligations
+
+**Users are responsible for:**
+
+* **Screening**: Verifying that all users, recipients, and destinations are not prohibited
+* **Due Diligence**: Conducting reasonable due diligence on end uses and end users
+* **Record Keeping**: Maintaining records of exports for at least 5 years
+* **Monitoring**: Staying informed of changes to export control regulations
+* **Legal Counsel**: Consulting with qualified legal counsel regarding compliance
+* **License Applications**: Obtaining export licenses when required (if License Exception TSU does not apply)
+
+### International Compliance
+
+#### Other Countries' Export Controls
+
+In addition to U.S. export controls, users must comply with export control laws of other jurisdictions:
+
+* **European Union**: Dual-use regulations (EU Regulation 2021/821)
+* **United Kingdom**: Export Control Act 2002 and dual-use regulations
+* **Canada**: Export and Import Permits Act
+* **Australia**: Defence Trade Controls Act 2012
+* **Japan**: Foreign Exchange and Foreign Trade Act
+* **Other countries**: Local export control and encryption laws
+
+#### Wassenaar Arrangement
+
+This software may fall under the Wassenaar Arrangement on Export Controls for Conventional Arms and Dual-Use Goods and Technologies, which is implemented by 42 participating states. Users should verify compliance with local implementations of Wassenaar controls.
+
+### Notification and Reporting
+
+#### Government Notification
+
+As required by 15 CFR § 742.15(b), notification has been provided to the U.S. government regarding the public availability of this encryption source code.
+
+**Notification Details:**
+* Repository URL: https://github.com/Lackadaisical-Security/Lackadaisical-Opsec-Anonymity-Tools
+* Contact: security@lackadaisical-security.com
+* Classification: Publicly available encryption source code under ECCN 5D002
+
+#### User Reporting Obligations
+
+Users who obtain export licenses must comply with reporting requirements specified in their licenses. Users should also be aware of deemed export rules when sharing this software with foreign nationals.
+
+### Penalties for Violations
+
+**Violations of U.S. export control laws can result in severe penalties:**
+
+* **Criminal Penalties**: Up to 20 years imprisonment and $1,000,000 fine per violation
+* **Civil Penalties**: Up to $300,000 or twice the value of the transaction per violation  
+* **Administrative Penalties**: Denial of export privileges, seizure of goods
+* **Additional Consequences**: Debarment from government contracts, reputation damage
+
+### Compliance Resources
+
+#### Government Resources
+
+* **Bureau of Industry and Security (BIS)**: https://www.bis.doc.gov/
+  - Export Administration Regulations: https://www.bis.doc.gov/regulations/
+  - ECCN Matrix: https://www.bis.doc.gov/ccl/
+  - Encryption Controls: https://www.bis.doc.gov/encryption/
+
+* **Office of Foreign Assets Control (OFAC)**: https://home.treasury.gov/policy-issues/office-of-foreign-assets-control-sanctions-programs-and-information
+  - Sanctions Programs: https://home.treasury.gov/policy-issues/financial-sanctions/sanctions-programs-and-country-information
+  - Consolidated Screening List: https://sanctionssearch.ofac.treas.gov/
+
+* **Directorate of Defense Trade Controls (DDTC)**: https://www.pmddtc.state.gov/
+  - International Traffic in Arms Regulations (ITAR)
+
+* **Consolidated Screening List**: https://www.trade.gov/consolidated-screening-list
+  - Unified search across all U.S. government restricted parties lists
+
+#### Additional Guidance
+
+* **BIS Encryption FAQs**: https://www.bis.doc.gov/encryption/encryption_faqs.html
+* **OFAC Guidance**: https://home.treasury.gov/policy-issues/office-of-foreign-assets-control-sanctions-programs-and-information/ofac-faqs
+* **Export Compliance Training**: Available through BIS and private organizations
+* **Legal Counsel**: Consult with attorneys specializing in export control law
+
+### Updates and Changes
+
+Export control regulations are subject to change. Users should:
+
+* Monitor the Federal Register for regulatory changes
+* Subscribe to BIS updates at https://www.bis.doc.gov/index.php/subscribe
+* Review OFAC sanctions updates regularly
+* Consult legal counsel periodically to ensure ongoing compliance
+
+**Last Updated**: 2026-01-29
+
+### Disclaimer of Liability
+
+**THE AUTHORS, CONTRIBUTORS, AND COPYRIGHT HOLDERS MAKE NO REPRESENTATION OR WARRANTY REGARDING:**
+
+* The applicability of export control laws to any specific use case
+* The accuracy or completeness of export control information provided
+* The current status of any country, region, individual, or entity under export control regulations
+* The appropriate classification of this software under export control regulations
+
+**USERS ASSUME FULL AND SOLE RESPONSIBILITY FOR:**
+
+* Determining the applicability of export control laws to their specific use case
+* Ensuring compliance with all applicable U.S. and international export control laws
+* Obtaining any necessary licenses, approvals, or authorizations
+* Verifying the status of destinations and parties against current restricted lists
+* Consulting with qualified legal counsel regarding export compliance
+
+**THE AUTHORS, CONTRIBUTORS, AND COPYRIGHT HOLDERS EXPRESSLY DISCLAIM ANY AND ALL LIABILITY FOR:**
+
+* Violations of export control laws by users
+* Penalties, fines, or sanctions imposed on users for export control violations  
+* Damages arising from non-compliance with export control regulations
+* Inaccuracies in export control information provided
+* Changes to export control regulations after publication
+
+This disclaimer applies to the maximum extent permitted by law.
+
 ---
 
 **Security is a process, not a product. Stay vigilant, stay updated, stay safe.**
 
-*Last updated: 2025-01-29*
+*Last updated: 2026-01-29*

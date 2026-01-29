@@ -19,3 +19,42 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+================================================================================
+U.S. EXPORT CONTROL NOTICE
+================================================================================
+
+This software contains cryptographic technology and is subject to U.S. export 
+control laws and regulations, including the Export Administration Regulations 
+(EAR). The software may not be exported, re-exported, or transferred to certain 
+countries, regions, individuals, or entities prohibited under U.S. law without 
+prior authorization from the U.S. government.
+
+PROHIBITED DESTINATIONS (subject to change):
+- Cuba, Iran, North Korea, Syria
+- Crimea, Donetsk, and Luhansk regions of Ukraine  
+- Any country subject to U.S. embargo or trade sanctions
+- Any individual or entity on U.S. government restricted parties lists
+
+By using this software, you certify that:
+1. You are not located in, under the control of, or a national or resident of 
+   any prohibited country or region
+2. You are not listed on any U.S. government list of prohibited or restricted 
+   parties
+3. You will not export, re-export, or transfer this software in violation of 
+   U.S. export control laws
+4. You will not use this software for any purpose prohibited by U.S. law, 
+   including weapons of mass destruction proliferation
+
+This software is publicly available under License Exception TSU in accordance 
+with 15 CFR § 740.13(e). Users are responsible for compliance with all 
+applicable export control laws and regulations.
+
+For more information:
+- Bureau of Industry and Security: https://www.bis.doc.gov/
+- Export Administration Regulations: https://www.ecfr.gov/cgi-bin/text-idx?tpl=/ecfrbrowse/Title15/15cfr730_main_02.tpl
+
+THE AUTHORS AND CONTRIBUTORS MAKE NO REPRESENTATION REGARDING THE APPLICABILITY 
+OF EXPORT CONTROL LAWS TO ANY SPECIFIC USE CASE AND EXPRESSLY DISCLAIM ANY 
+LIABILITY FOR VIOLATIONS OF SUCH LAWS. USERS ASSUME FULL RESPONSIBILITY FOR 
+ENSURING COMPLIANCE WITH ALL APPLICABLE EXPORT CONTROL REGULATIONS.
