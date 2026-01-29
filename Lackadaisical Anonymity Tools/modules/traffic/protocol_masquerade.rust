@@ -1,0 +1,445 @@
+use std::io::{Read, Write};
+use std::net::{TcpListener, TcpStream};
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::{Duration, SystemTime};
+use rand::{Rng, thread_rng};
+use aes::Aes256;
+use block_modes::{BlockMode, Cbc};
+use block_modes::block_padding::Pkcs7;
+use sha2::{Sha256, Digest};
+
+type Aes256Cbc = Cbc<Aes256, Pkcs7>;
+
+/// Protocol Masquerade - Makes arbitrary traffic look like legitimate protocols
+/// Part of Lackadaisical Anonymity Toolkit
+pub struct ProtocolMasquerade {
+    listen_addr: String,
+    target_addr: String,
+    protocol: Protocol,
+    key: Vec<u8>,
+}
+
+#[derive(Clone)]
+pub enum Protocol {
+    Https,
+    Http2,
+    WebSocket,
+    Ssh,
+    Ftp,
+    Smtp,
+}
+
+impl ProtocolMasquerade {
+    pub fn new(listen_addr: String, target_addr: String, protocol: Protocol, password: &str) -> Self {
+        let mut hasher = Sha256::new();
+        hasher.update(password.as_bytes());
+        let key = hasher.finalize().to_vec();
+        
+        Self {
+            listen_addr,
+            target_addr,
+            protocol,
+            key,
+        }
+    }
+    
+    pub fn start(&self) -> std::io::Result<()> {
+        let listener = TcpListener::bind(&self.listen_addr)?;
+        println!("[*] Protocol masquerade listening on {}", self.listen_addr);
+        println!("[*] Masquerading as {:?} protocol", self.protocol);
+        
+        for stream in listener.incoming() {
+            match stream {
+                Ok(client) => {
+                    let target_addr = self.target_addr.clone();
+                    let protocol = self.protocol.clone();
+                    let key = self.key.clone();
+                    
+                    thread::spawn(move || {
+                        if let Err(e) = handle_connection(client, target_addr, protocol, key) {
+                            eprintln!("[!] Connection error: {}", e);
+                        }
+                    });
+                }
+                Err(e) => eprintln!("[!] Accept error: {}", e),
+            }
+        }
+        
+        Ok(())
+    }
+}
+
+fn handle_connection(
+    mut client: TcpStream,
+    target_addr: String,
+    protocol: Protocol,
+    key: Vec<u8>,
+) -> std::io::Result<()> {
+    // Connect to target
+    let mut target = TcpStream::connect(target_addr)?;
+    
+    // Set up bidirectional relay with protocol masquerading
+    let client_clone = client.try_clone()?;
+    let target_clone = target.try_clone()?;
+    
+    let key_clone = key.clone();
+    let protocol_clone = protocol.clone();
+    
+    // Client to target thread
+    let client_to_target = thread::spawn(move || {
+        relay_with_masquerade(client, target_clone, true, protocol_clone, key_clone)
+    });
+    
+    // Target to client thread
+    let target_to_client = thread::spawn(move || {
+        relay_with_masquerade(target, client_clone, false, protocol, key)
+    });
+    
+    let _ = client_to_target.join();
+    let _ = target_to_client.join();
+    
+    Ok(())
+}
+
+fn relay_with_masquerade(
+    mut source: TcpStream,
+    mut dest: TcpStream,
+    is_client_to_server: bool,
+    protocol: Protocol,
+    key: Vec<u8>,
+) -> std::io::Result<()> {
+    let mut buffer = vec![0u8; 8192];
+    
+    loop {
+        let n = source.read(&mut buffer)?;
+        if n == 0 {
+            break;
+        }
+        
+        // Apply protocol masquerading
+        let masqueraded = match protocol {
+            Protocol::Https => masquerade_as_https(&buffer[..n], is_client_to_server),
+            Protocol::Http2 => masquerade_as_http2(&buffer[..n], is_client_to_server),
+            Protocol::WebSocket => masquerade_as_websocket(&buffer[..n], is_client_to_server),
+            Protocol::Ssh => masquerade_as_ssh(&buffer[..n], is_client_to_server),
+            Protocol::Ftp => masquerade_as_ftp(&buffer[..n], is_client_to_server),
+            Protocol::Smtp => masquerade_as_smtp(&buffer[..n], is_client_to_server),
+        };
+        
+        // Encrypt the masqueraded data
+        let encrypted = encrypt_data(&masqueraded, &key)?;
+        
+        dest.write_all(&encrypted)?;
+        dest.flush()?;
+    }
+    
+    Ok(())
+}
+
+fn masquerade_as_https(data: &[u8], is_client_to_server: bool) -> Vec<u8> {
+    let mut result = Vec::new();
+    
+    if is_client_to_server {
+        // TLS Client Hello
+        result.extend_from_slice(&[
+            0x16, 0x03, 0x01,  // TLS handshake, version 3.1
+            (data.len() >> 8) as u8, (data.len() & 0xFF) as u8,  // Length
+            0x01,  // Handshake type: Client Hello
+            0x00, (data.len() as u8 - 4), 0x00,  // Length
+            0x03, 0x03,  // TLS version 1.2
+        ]);
+        
+        // Random bytes
+        let mut rng = thread_rng();
+        for _ in 0..32 {
+            result.push(rng.gen());
+        }
+        
+        // Session ID length (0)
+        result.push(0x00);
+        
+        // Cipher suites
+        result.extend_from_slice(&[0x00, 0x20]);  // Length
+        for _ in 0..16 {
+            result.extend_from_slice(&[0xC0, rng.gen_range(0x00..0xFF)]);
+        }
+        
+        // Compression methods
+        result.extend_from_slice(&[0x01, 0x00]);
+        
+        // Embed actual data in extensions
+        result.extend_from_slice(&[0x00, 0x00]);  // Extensions length placeholder
+        let ext_start = result.len();
+        
+        // SNI extension with embedded data
+        result.extend_from_slice(&[0x00, 0x00]);  // SNI type
+        result.extend_from_slice(&[(data.len() >> 8) as u8, (data.len() & 0xFF) as u8]);
+        result.extend_from_slice(data);
+        
+        // Fix extensions length
+        let ext_len = result.len() - ext_start;
+        result[ext_start - 2] = (ext_len >> 8) as u8;
+        result[ext_start - 1] = (ext_len & 0xFF) as u8;
+    } else {
+        // TLS Server Hello
+        result.extend_from_slice(&[
+            0x16, 0x03, 0x03,  // TLS handshake, version 3.3
+            (data.len() >> 8) as u8, (data.len() & 0xFF) as u8,  // Length
+            0x02,  // Handshake type: Server Hello
+        ]);
+        result.extend_from_slice(data);
+    }
+    
+    result
+}
+
+fn masquerade_as_http2(data: &[u8], is_client_to_server: bool) -> Vec<u8> {
+    let mut result = Vec::new();
+    
+    if is_client_to_server {
+        // HTTP/2 connection preface
+        result.extend_from_slice(b"PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
+        
+        // SETTINGS frame
+        result.extend_from_slice(&[
+            0x00, 0x00, 0x00,  // Length (will be updated)
+            0x04,  // Type: SETTINGS
+            0x00,  // Flags
+            0x00, 0x00, 0x00, 0x00,  // Stream ID
+        ]);
+    }
+    
+    // DATA frame with actual data
+    let frame_header = [
+        (data.len() >> 16) as u8,
+        (data.len() >> 8) as u8,
+        (data.len() & 0xFF) as u8,
+        0x00,  // Type: DATA
+        0x01,  // Flags: END_STREAM
+        0x00, 0x00, 0x00, 0x01,  // Stream ID
+    ];
+    
+    result.extend_from_slice(&frame_header);
+    result.extend_from_slice(data);
+    
+    result
+}
+
+fn masquerade_as_websocket(data: &[u8], is_client_to_server: bool) -> Vec<u8> {
+    let mut result = Vec::new();
+    
+    if is_client_to_server {
+        // WebSocket frame
+        result.push(0x81);  // FIN=1, opcode=1 (text)
+        
+        // Payload length
+        if data.len() < 126 {
+            result.push(0x80 | data.len() as u8);  // Masked
+        } else if data.len() < 65536 {
+            result.push(0xFE);  // 16-bit length
+            result.push((data.len() >> 8) as u8);
+            result.push((data.len() & 0xFF) as u8);
+        } else {
+            result.push(0xFF);  // 64-bit length
+            for i in (0..8).rev() {
+                result.push((data.len() >> (i * 8)) as u8);
+            }
+        }
+        
+        // Masking key
+        let mut rng = thread_rng();
+        let mask: [u8; 4] = rng.gen();
+        result.extend_from_slice(&mask);
+        
+        // Masked payload
+        for (i, &byte) in data.iter().enumerate() {
+            result.push(byte ^ mask[i % 4]);
+        }
+    } else {
+        // Server WebSocket frame (unmasked)
+        result.push(0x81);  // FIN=1, opcode=1 (text)
+        
+        // Payload length
+        if data.len() < 126 {
+            result.push(data.len() as u8);
+        } else if data.len() < 65536 {
+            result.push(126);
+            result.push((data.len() >> 8) as u8);
+            result.push((data.len() & 0xFF) as u8);
+        } else {
+            result.push(127);
+            for i in (0..8).rev() {
+                result.push((data.len() >> (i * 8)) as u8);
+            }
+        }
+        
+        result.extend_from_slice(data);
+    }
+    
+    result
+}
+
+fn masquerade_as_ssh(data: &[u8], is_client_to_server: bool) -> Vec<u8> {
+    let mut result = Vec::new();
+    
+    if is_client_to_server {
+        // SSH protocol exchange
+        result.extend_from_slice(b"SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.3\r\n");
+    }
+    
+    // SSH packet
+    let packet_len = data.len() + 5;  // payload + padding length + padding
+    let padding_len = (8 - (packet_len % 8)) as u8;
+    
+    result.extend_from_slice(&[
+        (packet_len >> 24) as u8,
+        (packet_len >> 16) as u8,
+        (packet_len >> 8) as u8,
+        (packet_len & 0xFF) as u8,
+        padding_len,
+    ]);
+    
+    result.extend_from_slice(data);
+    
+    // Random padding
+    let mut rng = thread_rng();
+    for _ in 0..padding_len {
+        result.push(rng.gen());
+    }
+    
+    result
+}
+
+fn masquerade_as_ftp(data: &[u8], is_client_to_server: bool) -> Vec<u8> {
+    let mut result = Vec::new();
+    
+    if is_client_to_server {
+        // FTP command with data encoded in base64
+        result.extend_from_slice(b"STOR ");
+        result.extend_from_slice(&base64_encode(data));
+        result.extend_from_slice(b"\r\n");
+    } else {
+        // FTP response
+        result.extend_from_slice(b"226 Transfer complete. Data: ");
+        result.extend_from_slice(&base64_encode(data));
+        result.extend_from_slice(b"\r\n");
+    }
+    
+    result
+}
+
+fn masquerade_as_smtp(data: &[u8], is_client_to_server: bool) -> Vec<u8> {
+    let mut result = Vec::new();
+    
+    if is_client_to_server {
+        // SMTP DATA command with encoded content
+        result.extend_from_slice(b"DATA\r\n");
+        result.extend_from_slice(b"From: user@example.com\r\n");
+        result.extend_from_slice(b"To: admin@example.com\r\n");
+        result.extend_from_slice(b"Subject: Encrypted Message\r\n");
+        result.extend_from_slice(b"Content-Type: text/plain; charset=utf-8\r\n");
+        result.extend_from_slice(b"Content-Transfer-Encoding: base64\r\n\r\n");
+        result.extend_from_slice(&base64_encode(data));
+        result.extend_from_slice(b"\r\n.\r\n");
+    } else {
+        // SMTP response
+        result.extend_from_slice(b"250 OK: ");
+        result.extend_from_slice(&base64_encode(data));
+        result.extend_from_slice(b"\r\n");
+    }
+    
+    result
+}
+
+fn encrypt_data(data: &[u8], key: &[u8]) -> std::io::Result<Vec<u8>> {
+    let mut rng = thread_rng();
+    let iv: [u8; 16] = rng.gen();
+    
+    let cipher = Aes256Cbc::new_from_slices(key, &iv)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    
+    let ciphertext = cipher.encrypt_vec(data);
+    
+    let mut result = iv.to_vec();
+    result.extend_from_slice(&ciphertext);
+    
+    Ok(result)
+}
+
+fn base64_encode(data: &[u8]) -> Vec<u8> {
+    use base64::{Engine as _, engine::general_purpose};
+    general_purpose::STANDARD.encode(data).into_bytes()
+}
+
+// Timing attack mitigation
+pub struct TimingObfuscator {
+    min_delay: Duration,
+    max_delay: Duration,
+    pattern: TimingPattern,
+}
+
+pub enum TimingPattern {
+    Random,
+    Burst,
+    Regular,
+    Mimicry(Vec<Duration>),
+}
+
+impl TimingObfuscator {
+    pub fn new(min_delay: Duration, max_delay: Duration, pattern: TimingPattern) -> Self {
+        Self {
+            min_delay,
+            max_delay,
+            pattern,
+        }
+    }
+    
+    pub fn delay(&self) {
+        let delay = match &self.pattern {
+            TimingPattern::Random => {
+                let mut rng = thread_rng();
+                let range = self.max_delay.as_millis() - self.min_delay.as_millis();
+                let delay_ms = self.min_delay.as_millis() + rng.gen_range(0..range);
+                Duration::from_millis(delay_ms as u64)
+            }
+            TimingPattern::Burst => {
+                let mut rng = thread_rng();
+                if rng.gen_bool(0.8) {
+                    self.min_delay
+                } else {
+                    self.max_delay
+                }
+            }
+            TimingPattern::Regular => {
+                let avg = (self.min_delay.as_millis() + self.max_delay.as_millis()) / 2;
+                Duration::from_millis(avg as u64)
+            }
+            TimingPattern::Mimicry(patterns) => {
+                let mut rng = thread_rng();
+                patterns[rng.gen_range(0..patterns.len())]
+            }
+        };
+        
+        thread::sleep(delay);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_https_masquerade() {
+        let data = b"test data";
+        let masqueraded = masquerade_as_https(data, true);
+        assert!(masqueraded.starts_with(&[0x16, 0x03, 0x01]));
+    }
+    
+    #[test]
+    fn test_websocket_masquerade() {
+        let data = b"test data";
+        let masqueraded = masquerade_as_websocket(data, true);
+        assert_eq!(masqueraded[0], 0x81);  // WebSocket text frame
+    }
+}
