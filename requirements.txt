@@ -5,6 +5,10 @@ pysocks>=1.7.1
 cryptography>=38.0.0
 scapy>=2.5.0
 
+# DNS and network
+dnspython>=2.2.1
+python-nmap>=0.7.1
+
 # Identity and data
 faker>=15.0.0
 pillow>=9.3.0
@@ -18,8 +22,6 @@ pywin32>=304; sys_platform == 'win32'
 python-ptrace>=0.9.8; sys_platform != 'win32'
 
 # Network and security
-dnspython>=2.2.1
-python-nmap>=0.7.1
 yara-python>=4.2.3
 volatility3>=2.4.0
 
