@@ -528,9 +528,70 @@ python -m pytest tests/
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
+## Export Control and Compliance
+
+### U.S. Export Control Notice
+
+**IMPORTANT**: This software may be subject to U.S. export control laws and regulations, including the Export Administration Regulations (EAR) maintained by the U.S. Department of Commerce.
+
+#### Cryptographic Software Notice
+
+This repository contains cryptographic software and tools. The export, re-export, or transfer of this software may be restricted under U.S. law. The U.S. government classifies cryptographic software under Export Control Classification Number (ECCN) 5D002 on the Commerce Control List.
+
+#### License Exception Available
+
+Publicly available encryption source code may be exported under License Exception TSU (Technology and Software - Unrestricted) in accordance with 15 CFR § 740.13(e). However, users must still comply with notification requirements and restrictions on exports to certain countries and entities.
+
+#### Country Restrictions
+
+**Export, re-export, or transfer of this software is prohibited to the following countries and regions** (subject to change):
+
+- Cuba
+- Iran  
+- North Korea (Democratic People's Republic of Korea)
+- Syria
+- Crimea, Donetsk, and Luhansk regions of Ukraine
+- Any country or region subject to comprehensive U.S. sanctions
+
+Additionally, exports to certain individuals and entities on the U.S. government restricted parties lists are prohibited, including:
+- Denied Persons List (DPL)
+- Entity List
+- Specially Designated Nationals (SDN) List
+- Unverified List (UVL)
+
+#### User Responsibilities
+
+**By downloading, accessing, or using this software, you represent and warrant that:**
+
+1. You are not located in, under the control of, or a national or resident of any embargoed country
+2. You are not listed on any U.S. government list of prohibited or restricted parties
+3. You will not use this software for any purposes prohibited by U.S. law, including nuclear, chemical, or biological weapons proliferation, or missile technology development
+4. You will comply with all applicable export control laws and regulations
+5. You will not export, re-export, or transfer this software in violation of U.S. law
+
+#### Additional Legal Compliance
+
+Users are responsible for:
+- Complying with all applicable laws in their jurisdiction
+- Obtaining any necessary export licenses or approvals
+- Understanding and adhering to end-use restrictions
+- Monitoring changes to export control regulations
+- Consulting with legal counsel regarding compliance obligations
+
+#### Notification
+
+This software has been made publicly available in accordance with U.S. export control regulations. The source code repository URL has been provided to the U.S. government as required.
+
+For more information about U.S. export controls, visit:
+- Bureau of Industry and Security (BIS): https://www.bis.doc.gov/
+- Export Administration Regulations: https://www.bis.doc.gov/regulations/
+- Encryption Export Controls: https://www.bis.doc.gov/encryption/
+
 ## Disclaimer
 
 This toolkit is provided for educational and legitimate security testing purposes only. Users are solely responsible for complying with all applicable laws and regulations in their jurisdiction. The authors and contributors assume no liability for misuse or damage caused by this software.
+
+**EXPORT CONTROL DISCLAIMER**: The authors and contributors make no representation regarding the applicability of export control laws to any specific use case and expressly disclaim any liability for violations of such laws. Users assume full responsibility for ensuring compliance with all applicable export control regulations.
 
 ## Support
 
