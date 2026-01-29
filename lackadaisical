@@ -33,6 +33,10 @@ MODULES = {
         'script': 'tools/python/dns_leak_tester.py',
         'description': 'Test for DNS leaks'
     },
+    'https-enforce': {
+        'script': 'tools/python/https_enforcer.py',
+        'description': 'Enforce HTTPS and detect SSL/TLS issues'
+    },
     'anonymize': {
         'script': 'tools/python/network_anonymizer.py',
         'description': 'Automated network anonymization'
@@ -42,16 +46,20 @@ MODULES = {
     'metadata-clean': {
         'script': 'modules/data/metadata_cleaner.go',
         'interpreter': 'go run',
-        'description': 'Remove metadata from files'
+        'description': 'Remove EXIF and metadata from files'
     },
     'secure-delete': {
         'script': 'tools/python/secure_shredder.py',
-        'description': 'Military-grade file shredding'
+        'description': 'Military-grade file shredding (DoD, Gutmann)'
     },
     'steganography': {
         'script': 'modules/communication/steganography.php',
         'interpreter': 'php',
         'description': 'Hide data in images and files'
+    },
+    'password-gen': {
+        'script': 'tools/python/password_generator.py',
+        'description': 'Cryptographically secure password generation'
     },
     
     # Identity management

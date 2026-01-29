@@ -1,5 +1,9 @@
 # Lackadaisical Anonymity Toolkit
 
+<p align="center">
+  <img src="LOATicon.png" alt="Lackadaisical Anonymity Toolkit" width="200"/>
+</p>
+
 **By:** Lackadaisical Security  
 **Website:** https://lackadaisical-security.com  
 **Version:** 1.0.0
@@ -231,7 +235,7 @@ sudo ./lackadaisical counter-surveillance --full
 
 ## Available Tools
 
-### Network Anonymization (8 tools)
+### Network Anonymization (9 tools)
 
 | Tool | Command | Description |
 |------|---------|-------------|
@@ -239,17 +243,19 @@ sudo ./lackadaisical counter-surveillance --full
 | **DNS-over-HTTPS** | `dns-over-https` | Secure DNS with DoH support, multiple providers |
 | **VPN Chain** | `vpn-chain` | Multi-hop VPN chaining for layered anonymity |
 | **DNS Leak Tester** | `dns-leak-test` | Detect DNS leaks that compromise anonymity |
+| **HTTPS Enforcer** | `https-enforce` | Enforce HTTPS connections, detect SSL/TLS issues |
 | **Network Anonymizer** | `anonymize` | Automated multi-layer network anonymization |
 | **Traffic Analyzer** | `traffic-analyze` | Deep packet inspection and traffic analysis |
 | **Packet Injector** | `packet-inject` | Network packet manipulation and injection |
 | **MAC Spoofer** | `mac-spoof` | Hardware address randomization |
 
-### Data Security (4 tools)
+### Data Security (5 tools)
 
 | Tool | Command | Description |
 |------|---------|-------------|
 | **Metadata Cleaner** | `metadata-clean` | Remove EXIF and metadata from files |
 | **Secure Shredder** | `secure-delete` | Military-grade file deletion (DoD, Gutmann methods) |
+| **Password Generator** | `password-gen` | Cryptographically secure passwords & passphrases |
 | **Steganography** | `steganography` | Hide data in images, audio, and files |
 | **Secure Messenger** | `secure-messenger` | End-to-end encrypted messaging |
 
@@ -280,7 +286,7 @@ sudo ./lackadaisical counter-surveillance --full
 | **Counter-Surveillance** | `counter-surveillance` | Detect surveillance devices and monitoring |
 | **Memory Analyzer** | `memory-analyze` | Extract artifacts from RAM, detect malware |
 
-**Total: 25+ production-grade tools across 5 categories**
+**Total: 27 production-grade tools across 5 categories**
 
 ## Usage
 
