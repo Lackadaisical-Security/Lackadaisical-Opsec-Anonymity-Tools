@@ -44,6 +44,8 @@ vendor/bundle
 *.test
 *.prof
 go.work
+go.sum
+root/
 
 # Rust
 target/
