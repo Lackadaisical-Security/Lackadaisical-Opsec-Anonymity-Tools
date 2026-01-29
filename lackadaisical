@@ -16,6 +16,7 @@ sys.path.insert(0, str(TOOLKIT_ROOT))
 
 # Available modules and their entry points
 MODULES = {
+    # Network anonymization
     'tor-control': {
         'script': 'modules/network/tor_controller.py',
         'description': 'Control and monitor Tor connections'
@@ -24,19 +25,64 @@ MODULES = {
         'script': 'modules/network/dns_over_https.py',
         'description': 'Secure DNS resolution over HTTPS'
     },
+    'vpn-chain': {
+        'script': 'tools/python/vpn_chain.py',
+        'description': 'Chain multiple VPNs for multi-hop anonymity'
+    },
+    'dns-leak-test': {
+        'script': 'tools/python/dns_leak_tester.py',
+        'description': 'Test for DNS leaks'
+    },
+    'https-enforce': {
+        'script': 'tools/python/https_enforcer.py',
+        'description': 'Enforce HTTPS and detect SSL/TLS issues'
+    },
+    'anonymize': {
+        'script': 'tools/python/network_anonymizer.py',
+        'description': 'Automated network anonymization'
+    },
+    
+    # Data security
     'metadata-clean': {
-        'binary': 'bin/metadata_cleaner',
-        'description': 'Remove metadata from files'
+        'script': 'modules/data/metadata_cleaner.go',
+        'interpreter': 'go run',
+        'description': 'Remove EXIF and metadata from files'
     },
     'secure-delete': {
-        'binary': 'bin/secure_delete',
-        'description': 'Securely delete files'
+        'script': 'tools/python/secure_shredder.py',
+        'description': 'Military-grade file shredding (DoD, Gutmann)'
     },
+    'steganography': {
+        'script': 'modules/communication/steganography.php',
+        'interpreter': 'php',
+        'description': 'Hide data in images and files'
+    },
+    'password-gen': {
+        'script': 'tools/python/password_generator.py',
+        'description': 'Cryptographically secure password generation'
+    },
+    
+    # Identity management
     'pseudonym': {
         'script': 'modules/identity/pseudonym_generator.rb',
         'interpreter': 'ruby',
         'description': 'Generate fake identities'
     },
+    'biometric-spoof': {
+        'script': 'modules/identity/biometric_spoofer.py',
+        'description': 'Generate synthetic biometric data'
+    },
+    'credential-vault': {
+        'script': 'tools/python/credential_vault.py',
+        'description': 'Secure credential and persona storage'
+    },
+    'browser-spoof': {
+        'script': 'tools/javascript/browser_fingerprint_spoofer.js',
+        'interpreter': 'node',
+        'description': 'Spoof browser fingerprint'
+    },
+    
+    # System protection
     'mac-spoof': {
         'script': 'tools/perl/mac_spoofer.pl',
         'interpreter': 'perl',
@@ -50,47 +96,49 @@ MODULES = {
         'script': 'modules/system/anti_forensics.py',
         'description': 'Defeat forensic analysis'
     },
-    'browser-spoof': {
-        'script': 'modules/web/browser_fingerprint_spoofer.js',
-        'interpreter': 'node',
-        'description': 'Spoof browser fingerprint'
-    },
-    'network-scan': {
-        'binary': 'bin/NetworkScanner',
-        'description': 'Advanced network scanning'
-    },
-    'steganography': {
-        'script': 'tools/php/steganography.php',
-        'interpreter': 'php',
-        'description': 'Hide data in images and files'
-    },
-    'traffic-analyze': {
-        'script': 'tools/lua/traffic_analyzer.lua',
-        'interpreter': 'lua',
-        'description': 'Analyze network traffic'
+    'filesystem-monitor': {
+        'script': 'tools/python/filesystem_monitor.py',
+        'description': 'Monitor filesystem for changes'
     },
     'privacy-check': {
         'script': 'tools/bash/privacy_check.sh',
         'interpreter': 'bash',
         'description': 'Check system privacy status'
     },
-    'anonymize': {
-        'script': 'tools/python/network_anonymizer.py',
-        'description': 'Automated network anonymization'
+    'trace-remove': {
+        'script': 'tools/powershell/Remove-Traces.ps1',
+        'interpreter': 'pwsh',
+        'description': 'Remove system traces (Windows)'
     },
+    
+    # Analysis and OPSEC
     'footprint-analyze': {
         'script': 'modules/opsec/digital_footprint_analyzer.py',
-        'description': 'Analyze digital footprint'
+        'description': 'Analyze digital footprint and privacy exposure'
     },
     'counter-surveillance': {
         'script': 'modules/opsec/counter_surveillance.sh',
         'interpreter': 'bash',
         'description': 'Detect surveillance devices'
     },
-    'trace-remove': {
-        'script': 'tools/powershell/Remove-Traces.ps1',
-        'interpreter': 'pwsh',
-        'description': 'Remove system traces (Windows)'
+    'memory-analyze': {
+        'script': 'modules/forensics/memory_analyzer.py',
+        'description': 'Analyze system memory for artifacts'
+    },
+    'traffic-analyze': {
+        'script': 'tools/lua/traffic_analyzer.lua',
+        'interpreter': 'lua',
+        'description': 'Analyze network traffic'
+    },
+    
+    # Communication
+    'secure-messenger': {
+        'script': 'modules/communication/secure_messenger.py',
+        'description': 'End-to-end encrypted messaging'
+    },
+    'packet-inject': {
+        'script': 'tools/python/packet_injector.py',
+        'description': 'Network packet manipulation'
     }
 }
 

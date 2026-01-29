@@ -1,5 +1,9 @@
 # Lackadaisical Anonymity Toolkit
 
+<p align="center">
+  <img src="LOATicon.png" alt="Lackadaisical Anonymity Toolkit" width="200"/>
+</p>
+
 **By:** Lackadaisical Security  
 **Website:** https://lackadaisical-security.com  
 **Version:** 1.0.0
@@ -92,44 +96,197 @@ The toolkit includes implementations in multiple programming languages:
 ### Quick Install
 
 ```bash
-git clone https://github.com/lackadaisical-security/anonymity-toolkit
-cd anonymity-toolkit
-sudo ./scripts/deploy.sh install
+git clone https://github.com/Lackadaisical-Security/Lackadaisical-Opsec-Anonymity-Tools.git
+cd Lackadaisical-Opsec-Anonymity-Tools
+pip3 install -r requirements.txt
+chmod +x lackadaisical
+./lackadaisical --list
 ```
 
-### Docker Installation
+### System Dependencies
+
+**Debian/Ubuntu:**
+```bash
+sudo apt-get update
+sudo apt-get install -y python3 python3-pip tor golang ruby nodejs npm \
+    rustc perl lua5.3 openvpn wireguard-tools
+```
+
+**Fedora/RHEL:**
+```bash
+sudo dnf install -y python3 python3-pip tor golang ruby nodejs npm \
+    rust perl lua openvpn wireguard-tools
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S python python-pip tor go ruby nodejs npm rust perl lua \
+    openvpn wireguard-tools
+```
+
+**macOS:**
+```bash
+brew install python tor go ruby node rust perl lua openvpn wireguard-tools
+```
+
+### Python Dependencies
+
+Install all required Python packages:
+```bash
+pip3 install -r requirements.txt
+```
+
+Core packages include:
+- `cryptography` - Encryption and secure storage
+- `stem` - Tor control 
+- `dnspython` - DNS operations
+- `requests` - HTTP requests
+- `scapy` - Network packet manipulation
+- `psutil` - System monitoring
+
+### Optional Components
+
+**Golang tools:**
+```bash
+cd modules/data
+go build metadata_cleaner.go
+```
+
+**Rust tools:**
+```bash
+cd modules/traffic  
+cargo build --release
+```
+
+**Ruby tools:**
+```bash
+gem install faker
+```
+
+## Quick Start
+
+### 1. Test Your Privacy Status
 
 ```bash
-docker pull lackadaisical/anonymity-toolkit:latest
-docker run -it --rm --cap-add=NET_ADMIN lackadaisical/anonymity-toolkit:latest
+# Check system privacy
+./lackadaisical privacy-check
+
+# Analyze digital footprint
+./lackadaisical footprint-analyze --output footprint-report.txt
+
+# Test for DNS leaks
+./lackadaisical dns-leak-test
 ```
 
-### Manual Installation
+### 2. Setup Network Anonymity
 
-1. **Install Dependencies**:
-   ```bash
-   # Debian/Ubuntu
-   sudo apt-get install python3 python3-pip tor golang ruby nodejs npm rustc
-   
-   # Fedora
-   sudo dnf install python3 python3-pip tor golang ruby nodejs npm rust
-   
-   # Arch
-   sudo pacman -S python python-pip tor go ruby nodejs npm rust
-   
-   # macOS
-   brew install python tor go ruby node rust
-   ```
+```bash
+# Start Tor
+sudo systemctl start tor
 
-2. **Install Python Requirements**:
-   ```bash
-   pip3 install -r requirements.txt
-   ```
+# Control Tor circuit
+./lackadaisical tor-control --new-identity
 
-3. **Build Tools**:
-   ```bash
-   ./scripts/setup.sh
-   ```
+# Chain VPNs (requires root)
+sudo ./lackadaisical vpn-chain start --providers mullvad proton --hops 2
+
+# Full network anonymization
+sudo ./lackadaisical anonymize --tor --vpn --dns-crypt
+```
+
+### 3. Manage Identities
+
+```bash
+# Initialize credential vault
+./lackadaisical credential-vault init
+
+# Generate fake identity
+./lackadaisical pseudonym --full --with-backstory
+
+# Add persona to vault
+./lackadaisical credential-vault add john_doe --interactive
+```
+
+### 4. Secure Data
+
+```bash
+# Remove metadata from images
+./lackadaisical metadata-clean *.jpg --recursive
+
+# Secure file deletion (DoD 5220.22-M)
+./lackadaisical secure-delete sensitive.txt --method dod7 --verify
+
+# Hide data in image (steganography)
+./lackadaisical steganography hide --cover photo.jpg --data secret.txt
+```
+
+### 5. Monitor System
+
+```bash
+# Real-time activity monitoring
+sudo ./lackadaisical activity-monitor --real-time
+
+# Detect surveillance
+sudo ./lackadaisical counter-surveillance --full
+
+# Monitor filesystem changes
+./lackadaisical filesystem-monitor /path/to/watch
+```
+
+## Available Tools
+
+### Network Anonymization (9 tools)
+
+| Tool | Command | Description |
+|------|---------|-------------|
+| **Tor Controller** | `tor-control` | Manage Tor circuits, rotate identity, monitor connections |
+| **DNS-over-HTTPS** | `dns-over-https` | Secure DNS with DoH support, multiple providers |
+| **VPN Chain** | `vpn-chain` | Multi-hop VPN chaining for layered anonymity |
+| **DNS Leak Tester** | `dns-leak-test` | Detect DNS leaks that compromise anonymity |
+| **HTTPS Enforcer** | `https-enforce` | Enforce HTTPS connections, detect SSL/TLS issues |
+| **Network Anonymizer** | `anonymize` | Automated multi-layer network anonymization |
+| **Traffic Analyzer** | `traffic-analyze` | Deep packet inspection and traffic analysis |
+| **Packet Injector** | `packet-inject` | Network packet manipulation and injection |
+| **MAC Spoofer** | `mac-spoof` | Hardware address randomization |
+
+### Data Security (5 tools)
+
+| Tool | Command | Description |
+|------|---------|-------------|
+| **Metadata Cleaner** | `metadata-clean` | Remove EXIF and metadata from files |
+| **Secure Shredder** | `secure-delete` | Military-grade file deletion (DoD, Gutmann methods) |
+| **Password Generator** | `password-gen` | Cryptographically secure passwords & passphrases |
+| **Steganography** | `steganography` | Hide data in images, audio, and files |
+| **Secure Messenger** | `secure-messenger` | End-to-end encrypted messaging |
+
+### Identity Management (4 tools)
+
+| Tool | Command | Description |
+|------|---------|-------------|
+| **Pseudonym Generator** | `pseudonym` | Generate realistic fake identities |
+| **Biometric Spoofer** | `biometric-spoof` | Generate synthetic biometric data |
+| **Credential Vault** | `credential-vault` | Encrypted storage for multiple personas |
+| **Browser Fingerprint Spoofer** | `browser-spoof` | Defeat browser fingerprinting |
+
+### System Protection (5 tools)
+
+| Tool | Command | Description |
+|------|---------|-------------|
+| **Activity Monitor** | `activity-monitor` | Real-time threat detection and monitoring |
+| **Anti-Forensics** | `anti-forensics` | Defeat forensic analysis techniques |
+| **Filesystem Monitor** | `filesystem-monitor` | Detect unauthorized file access |
+| **Privacy Check** | `privacy-check` | System-wide privacy assessment |
+| **Trace Removal** | `trace-remove` | Clean system logs and artifacts (Windows) |
+
+### Analysis & OPSEC (4 tools)
+
+| Tool | Command | Description |
+|------|---------|-------------|
+| **Digital Footprint Analyzer** | `footprint-analyze` | Comprehensive privacy exposure analysis |
+| **Counter-Surveillance** | `counter-surveillance` | Detect surveillance devices and monitoring |
+| **Memory Analyzer** | `memory-analyze` | Extract artifacts from RAM, detect malware |
+
+**Total: 27 production-grade tools across 5 categories**
 
 ## Usage
 
