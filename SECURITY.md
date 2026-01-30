@@ -349,14 +349,6 @@ We recognize and reward security researchers:
 * **In Scope**: All code in this repository
 * **Out of Scope**: Third-party dependencies, infrastructure
 
-### Rewards
-
-* **Critical**: $500 - $2000
-* **High**: $250 - $500  
-* **Medium**: $100 - $250
-* **Low**: $50 - $100
-* **Hall of Fame**: Recognition and swag
-
 ### Rules
 
 1. No public disclosure before fix
