@@ -1,3 +1,150 @@
+# Contributing to the Lackadaisical Anonymity Toolkit
+
+**By:** Lackadaisical Security  
+**Website:** https://lackadaisical-security.com
+
+> Read the [Code of Conduct](CODE_OF_CONDUCT.md) first. Technical merit, operational security, and integrity — nothing else.
+
+Thank you for your interest in contributing to the Lackadaisical Anonymity Toolkit. This project is built by security and privacy practitioners for security and privacy practitioners. Every contribution — whether code, documentation, testing, or security research — matters.
+
+## Getting Started
+
+### Prerequisites
+
+Before contributing, ensure you have:
+
+- **Python 3.9+** — primary language for most modules
+- **Git** with GPG signing configured (commit signing is strongly recommended)
+- **Tor** installed and running — required for network module testing
+- Development dependencies installed (see setup below)
+- Working knowledge of OPSEC and anonymization tools
+- Understanding of the threat models your code addresses
+
+### Fork and Clone
+
+```bash
+# Fork via GitHub UI, then clone your fork
+git clone https://github.com/YOUR_USERNAME/Lackadaisical-Opsec-Anonymity-Tools.git
+cd Lackadaisical-Opsec-Anonymity-Tools
+
+# Add upstream remote
+git remote add upstream https://github.com/Lackadaisical-Security/Lackadaisical-Opsec-Anonymity-Tools.git
+```
+
+### Development Setup
+
+```bash
+# Run the automated setup script
+./scripts/setup.sh
+
+# Or manually:
+python3 -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Install dev dependencies
+pip install pytest black pylint mypy pytest-cov
+```
+
+## Development Workflow
+
+### Branching Strategy
+
+- `main` — stable, production-ready code only
+- `dev` — integration branch for features in progress
+- `feature/your-feature` — new features
+- `fix/issue-description` — bug fixes
+- `security/cve-description` — security patches (coordinate privately first)
+
+### Standard Workflow
+
+```bash
+# Sync with upstream before starting
+git fetch upstream
+git checkout dev
+git merge upstream/dev
+
+# Create your branch
+git checkout -b feature/your-feature
+
+# Make changes, then commit (GPG signing recommended)
+git add .
+git commit -S -m "feat(module): short description of change"
+
+# Push and open a PR targeting the dev branch
+git push origin feature/your-feature
+```
+
+### Commit Message Format
+
+Use conventional commits:
+
+```
+type(scope): short description (max 72 chars)
+
+Longer description explaining WHY the change is needed, not just what
+it does. For security features, include threat model considerations.
+
+Fixes #123
+```
+
+Types: `feat`, `fix`, `security`, `docs`, `test`, `refactor`, `perf`
+
+## Code Standards
+
+### General Principles
+
+1. **Security First** — every function handling sensitive data must fail safely without leaking state
+2. **No Telemetry** — no analytics, no external calls that weren't explicitly requested by the user
+3. **Minimal Dependencies** — prefer stdlib; justify every external dependency with a threat model rationale
+4. **Memory Safety** — clear sensitive data from memory immediately after use
+5. **Cross-Platform** — test on Linux/macOS/Windows where applicable
+
+### Python Style
+
+Follow PEP 8 with these additions:
+
+- Type hints required for all public functions and methods
+- Docstrings required for all public classes and functions
+- Maximum line length: 100 characters
+- Use `black` for formatting, `pylint` for static analysis
+
+```python
+# Correct — typed, documented, clear purpose
+def rotate_identity(circuit_id: int = 0) -> bool:
+    """Rotate Tor circuit to establish a new network identity.
+
+    Args:
+        circuit_id: Specific circuit to close, or 0 to close all circuits.
+
+    Returns:
+        True if identity rotation succeeded, False otherwise.
+    """
+    pass
+
+# Incorrect — no type hints, no docstring, ambiguous name
+def rotate(id):
+    pass
+```
+
+### Error Handling
+
+```python
+# Use specific exceptions; never leak sensitive data in error messages
+try:
+    result = sensitive_operation()
+except SpecificError as e:
+    logger.error("Operation failed: %s", type(e).__name__)  # class name only
+    raise OperationError("Operation failed") from None
+finally:
+    secure_clear(sensitive_data)  # always clear sensitive data
+```
+
+### Logging
+
+Use the project logger at the appropriate level. **Never log sensitive data** — no keys, passwords, IP addresses, or user identifiers:
+
+```python
 # Logging
 logger.debug("Detailed information for debugging")
 logger.info("General information")
